@@ -1,72 +1,69 @@
 .text
 null_cipher_sf:
-    move $t0, $a0 # address of next byte to write
-    move $t1, $a1 # address of current byte in input
-    move $t2, $a2 # address of current char index
-    move $t5, $a3 # size of array
+    # $a0 -> address of next byte to write
+    # $a1 -> address of current byte in input
+    # $a2 -> address of current char index
+    # $a3 -> size of array
 
-    li $v0, 0 # number of characters in $t0
+    li $v0, 0 # number of characters in $a0
 
     null_cipher_sf_loop_a3_times:
         # check if we still need to read words
-        beq $t5, $0, null_cipher_sf_done
+        beq $a3, $0, null_cipher_sf_done
 
-        lb $t3, 0($t2) # grab the index we need
+        lb $t1, 0($a2) # grab the index we need
         
         # if the index is 0, we marked the word as handled and skip to next word
-        beq $t3, $0, null_cipher_sf_loop_a3_times_skip_to_next_word
+        beq $t1, $0, null_cipher_sf_loop_a3_times_skip_to_next_word
 
         # subtract 1 to get 0-indexed
-        addi $t3, $t3, -1
+        addi $t1, $t1, -1
 
-        # shift left 2 times to multiply by 4 and get address offset
-        # sll $t3, $t3, 2
+        # apply offset on a1 to get address of the character we need to store
+        add $a1, $a1, $t1
 
-        # apply offset on t1 to get address of the character we need to store
-        add $t1, $t1, $t3
-
-        # reuse t3 to store the character
-        lb $t3, 0($t1)
+        # reuse t1 to store the character
+        lb $t1, 0($a1)
 
         # store the character at the ouput address and move
-        sb $t3, 0($t0)
-        addi $t0, $t0, 1
+        sb $t1, 0($a0)
+        addi $a0, $a0, 1
         addi $v0, $v0, 1
 
-        # t1 is currently the character we already read
+        # a1 is currently the character we already read
         null_cipher_sf_loop_a3_times_skip_to_next_word:
-            # move t1 so we can check next character
-            addi $t1, $t1, 1
+            # move a1 so we can check next character
+            addi $a1, $a1, 1
 
-            # reuse t3 again to store the character
-            lb $t3, 0($t1)
+            # reuse t1 again to store the character
+            lb $t1, 0($a1)
 
-            # if t3 is space, the next letter is the new word
-            li $t4, ' '
-            beq $t3, $t4, null_cipher_sf_loop_update_pointers
+            # if t1 is space, the next letter is the new word
+            li $t2, ' '
+            beq $t1, $t2, null_cipher_sf_loop_update_pointers
             
-            # check if t3 is null
-            beq $t3, $0, null_cipher_sf_done
+            # check if t1 is null
+            beq $t1, $0, null_cipher_sf_done
             
             j null_cipher_sf_loop_a3_times_skip_to_next_word
         null_cipher_sf_loop_update_pointers:
-            addi $t1, $t1, 1
-            addi $t2, $t2, 4
-            addi $t5, $t5, -1
+            addi $a1, $a1, 1
+            addi $a2, $a2, 4
+            addi $a3, $a3, -1
             j null_cipher_sf_loop_a3_times
 
     null_cipher_sf_done:
-        # reuse t1 to store byte of t0
-        lb $t1, 0($t0)
+        # reuse a1 to store byte of a0
+        lb $a1, 0($a0)
 
         # we check if we need to set null at the end
-        beq $t1, $0, null_cipher_sf_done_actually
-        sb $0, 0($t0)
+        beq $a1, $0, null_cipher_sf_done_actually
+        sb $0, 0($a0)
     null_cipher_sf_done_actually:
         jr $ra
 
 transposition_cipher_sf:
-
+    
     jr $ra
 
 decrypt_sf:
