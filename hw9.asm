@@ -53,17 +53,51 @@ null_cipher_sf:
             j null_cipher_sf_loop_a3_times
 
     null_cipher_sf_done:
-        # reuse a1 to store byte of a0
-        lb $a1, 0($a0)
-
-        # we check if we need to set null at the end
-        beq $a1, $0, null_cipher_sf_done_actually
+        #  set null at the end
         sb $0, 0($a0)
-    null_cipher_sf_done_actually:
+
         jr $ra
 
 transposition_cipher_sf:
-    
+    li $v0, 0
+
+    li $t0, 0
+    transposition_cipher_sf_loop:
+        lb $t1, 0($a1)
+        beq $t1, $0, transposition_cipher_sf_loop_end
+
+        div $t0, $a2 # divide index by a2 (num_rows)
+        mflo $t2 # quotient gives column index
+        mfhi $t3 # remainder gives row index
+
+        # get index to store t3*a3 + t2
+
+        # t3*a3
+        mult $t3, $a3
+        mflo $t4
+
+        # +t2
+        add $t4, $t4, $t2
+
+        # get address to store
+        add $t4, $t4, $a0
+        sb $t1, 0($t4)
+
+
+        # only update v0 if we did not store *
+        li $t4, '*' # resuee t4
+        beq $t1, $t4, transposition_cipher_sf_loop_update_pointers
+        addi $v0, $v0, 1
+        transposition_cipher_sf_loop_update_pointers:
+            addi $a1, $a1, 1
+            addi $t0, $t0, 1
+            j transposition_cipher_sf_loop
+    transposition_cipher_sf_loop_end:
+
+    # set null at first *
+    add $a0, $a0, $v0
+    sb $0, 0($a0)
+
     jr $ra
 
 decrypt_sf:

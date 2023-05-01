@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 void null_cipher_sf() {
     // given
@@ -66,8 +67,7 @@ void null_cipher_sf() {
     }
 
     // END LABEL
-    if (*s0 != '\0')
-        *s0 = '\0';
+    *s0 = '\0';
     
     printf("ciphered=\"%s\"\n", a0);
     printf("v0=%d\n", v0);
@@ -81,8 +81,29 @@ void transposition_cipher_sf() {
 
     int v0 = 0;
 
-    
+    char *a0_ = a0;
+    char *a1_ = a1;
 
+    int t0 = 0;
+    while (1) {
+        char t1 = *a1_;
+        if (t1 == '\0')
+            break;
+        
+        int t2 = t0 / a2;
+        int t3 = t0 % a2;
+        int t4 = t3*a3 + t2;
+        *(a0 + t4) = t1;
+        
+        if (t1 != '*')
+            v0++;
+
+        a1_++;
+        t0++;
+    }
+
+    *(a0 + v0) = '\0';
+    
     printf("output=\"%s\"\n", a0);
     printf("v0=%d\n", v0);
 }
