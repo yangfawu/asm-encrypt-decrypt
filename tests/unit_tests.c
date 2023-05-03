@@ -24,9 +24,9 @@ void execute_test(char *test_name) {
     expect_outfile_matches(test_name);
 }
 
-TestSuite(base_null_tests, .timeout=TEST_TIMEOUT, .disabled=true);
+TestSuite(base_null_tests, .timeout=TEST_TIMEOUT, .disabled=false);
 TestSuite(base_transposition_tests, .timeout=TEST_TIMEOUT, .disabled=false);
-TestSuite(base_decrypt_tests, .timeout=TEST_TIMEOUT, .disabled=true);
+TestSuite(base_decrypt_tests, .timeout=TEST_TIMEOUT, .disabled=false);
 
 Test(base_null_tests, null_cipher_decrypt_test01) {
     execute_test("null_cipher_decrypt_test01");
