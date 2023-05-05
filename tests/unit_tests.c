@@ -24,28 +24,25 @@ void execute_test(char *test_name) {
     expect_outfile_matches(test_name);
 }
 
-TestSuite(base_null_tests, .timeout=TEST_TIMEOUT, .disabled=false);
-TestSuite(base_transposition_tests, .timeout=TEST_TIMEOUT, .disabled=false);
-TestSuite(base_decrypt_tests, .timeout=TEST_TIMEOUT, .disabled=false);
+TestSuite(base_tests, .timeout=TEST_TIMEOUT, .disabled=false);
 
-Test(base_null_tests, null_cipher_decrypt_test01) {
+Test(base_tests, null_cipher_decrypt_test01) {
     execute_test("null_cipher_decrypt_test01");
 }
-Test(base_null_tests, null_cipher_decrypt_test02) {
+Test(base_tests, null_cipher_decrypt_test02) {
     execute_test("null_cipher_decrypt_test02");
 }
 
-Test(base_transposition_tests, transposition_cipher_decrypt_test01) {
+Test(base_tests, transposition_cipher_decrypt_test01) {
     execute_test("transposition_cipher_decrypt_test01");
 }
-Test(base_transposition_tests, transposition_cipher_decrypt_test02) {
+Test(base_tests, transposition_cipher_decrypt_test02) {
     execute_test("transposition_cipher_decrypt_test02");
 }
 
-Test(base_decrypt_tests, decrypt_test01) {
+Test(base_tests, decrypt_test01) {
     execute_test("decrypt_test01");
 }
-Test(base_decrypt_tests, decrypt_test02) {
+Test(base_tests, decrypt_test02) {
     execute_test("decrypt_test02");
 }
-
